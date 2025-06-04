@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Патентный поиск</title>
+    <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <script src="https://cdn.plot.ly/plotly-2.25.0.min.js"></script>
+</head>
+<body>
+
+<!-- Шапка -->
+<div class="new-header">
+    <img src="../static/images/logo.png" alt="Логотип" class="logo">
+    <div class="nav-center">
+        <a href="#" class="nav-title">Патентный поиск</a>
+        <a href="#" class="nav-link">Упоминания в медиа</a>
+    </div>
+</div>
+
+<!-- Герой -->
+<div class="hero-container">
+    <div class="hero-content">
+        <h1 class="text-white">Модуль для автоматизированного патентного поиска</h1>
+        <div class="text-box">
+            <p>Поиск патентов позволит быстро найти нужную информацию в патентных базах данных.
+                Удобный поиск и визуализация результатов помогают легко ориентироваться
+                в массиве данных и находить решения для ваших задач.</p>
+        </div>
+        <button class="btn-custom" id="searchBtn">Поиск!</button>
+    </div>
+</div>
+
+<!-- Форма -->
+<div class="search-container" id="startWorkSection">
+    <div class="search-box">
+        <h2>Начало работы</h2>
+        <form method="post" onsubmit="return validateAndSubmit()">
+            <p>Начать поиск в:</p>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="google-patent" name="source_google"
+                       {{ 'checked' if use_google else '' }}>
+                <label class="form-check-label" for="google-patent">Google Patent</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="lens-org" name="source_lens"
+                       {{ 'checked' if use_lens else '' }}>
+                <label class="form-check-label" for="lens-org">Lens.org</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="fips" name="source_fips"
+                       {{ 'checked' if use_fips else '' }}>
+                <label class="form-check-label" for="fips">ФИПС</label>
+            </div>
+
+            <div class="divider"></div>
+            <p>Введите параметры поиска:</p>
+            <div class="d-flex gap-2 mb-3 align-items-center">
+                <input type="text" class="form-control keyword-input" name="keyword"
+                       placeholder="Ключевое слово" required value="{{ keyword }}">
+                <input type="number" class="form-control year-input" name="year_start"
+                       placeholder="Год от" min="1800" max="{{ current_year }}"
+                       value="{{ year_start }}">
+                <input type="number" class="form-control year-input" name="year_end"
+                       placeholder="Год до" min="1800" max="{{ current_year }}"
+                       value="{{ year_end }}">
+            </div>
+
+            <button class="btn-custom btn-result" type="submit">Получить результат!</button>
+        </form>
+    </div>
+</div>
+
+<!-- Сообщения -->
+<div class="container my-3">
+    {% for message in messages %}
+    <div class="alert alert-warning">{{ message }}</div>
+    {% endfor %}
+</div>
+
+<!-- Результаты -->
+{% if sources %}
+<div class="container my-4">
+    {% for name, lst in sources %}
+    <h3 class="mt-4">{{ name }}</h3>
+    <div class="row gx-4 gy-4">
+        {% for item in lst %}
+        <div class="col-md-4 d-flex">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text"><strong>Дата:</strong>
+                        {% if item.pub_date %}{{ item.pub_date[:10] }}
+                        {% elif item.date %}{{ item.date }}{% else %}—{% endif %}
+                    </p>
+                    <p class="card-text"><strong>Заявитель:</strong>
+                        {{ item.applicants or item.holder or '—' }}
+                    </p>
+                    <p class="card-text">
+                        {{ (item.abstract or '')[:200]
+                        ~ ('…' if (item.abstract or '')|length > 200 else '') }}
+                    </p>
+                    <a href="{{ item.url or ('https://www1.fips.ru/iiss/' ~ item.href) }}"
+                       class="mt-auto btn btn-link" target="_blank">Читать подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- График 1 -->
+{% if graph1JSON %}
+  <h3 class="mt-5">Патенты по годам</h3>
+  <div id="chart1" style="width:100%; height:400px;"></div>
+
+  <!-- Два графика рядом -->
+  <div class="d-flex flex-wrap gap-4 mt-4 justify-content-center">
+    <div style="flex:1 1 45%; min-width:300px; height:400px;">
+      <h5 class="text-center">Заявители по годам</h5>
+      <div id="chart2" style="width:100%; height:100%;"></div>
+    </div>
+    <div style="flex:1 1 45%; min-width:300px; height:400px;">
+      <h5 class="text-center">Топ-10 заявителей</h5>
+      <div id="chart3" style="width:100%; height:100%;"></div>
+    </div>
+  </div>
+
+  <!-- Вынесенная и центрированная легенда -->
+  <div class="text-center mt-3">
+    {% for color, app in legend_pairs %}
+      <span style="display:inline-block; margin:0 12px; vertical-align:middle;">
+        <span style="
+               width:12px;
+               height:12px;
+               background-color: {{ color }};
+               display:inline-block;
+               margin-right:6px;
+             "></span>
+        {{ app }}
+      </span>
+    {% endfor %}
+  </div>
+
+  <!-- Скрипт прорисовки -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const g1 = JSON.parse(`{{ graph1JSON | safe }}`),
+            g2 = JSON.parse(`{{ graph2JSON | safe }}`),
+            g3 = JSON.parse(`{{ graph3JSON | safe }}`);
+      Plotly.newPlot('chart1', g1.data, g1.layout, {responsive: true});
+      Plotly.newPlot('chart2', g2.data, g2.layout, {responsive: true});
+      Plotly.newPlot('chart3', g3.data, g3.layout, {responsive: true});
+    });
+  </script>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('searchBtn').onclick = () =>
+        document.getElementById('startWorkSection').scrollIntoView({behavior: 'smooth'});
+
+    function validateAndSubmit() {
+        const kw = document.querySelector('input[name="keyword"]').value.trim();
+        const boxes = document.querySelectorAll('.form-check-input:checked');
+        if (!kw) {
+            alert('Введите ключевое слово');
+            return false;
+        }
+        if (boxes.length === 0) {
+            alert('Выберите хотя бы один источник');
+            return false;
+        }
+        const currentYear = new Date().getFullYear();
+        const y1 = parseInt(document.querySelector('input[name="year_start"]').value) || null;
+        const y2 = parseInt(document.querySelector('input[name="year_end"]').value) || null;
+        if ((y1 && (y1 < 1950 || y1 > currentYear)) ||
+            (y2 && (y2 < 1950 || y2 > currentYear))) {
+            alert('Год должен быть в диапазоне 1950–' + currentYear);
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

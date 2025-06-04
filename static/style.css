@@ -1,0 +1,331 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+    background-color: #E3F0FF;
+}
+
+/* Шапка */
+.new-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 5%;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    background-color: rgba(0, 27, 55, 0.8);
+}
+
+.logo {
+    height: 50px;
+    margin-right: 25px;
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.nav-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+    color: white;
+    position: relative;
+    text-decoration: none;
+}
+
+.nav-title::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 1px;
+    background: white;
+    opacity: 0.8;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* Основной контент */
+.hero-container {
+    background: url('../static/images/background.jpg') no-repeat center center/cover;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+    max-width: 50%;
+    margin-left: 5%;
+    margin-top: 5%;
+}
+
+.text-box {
+    color: white;
+    border: 1px solid white;
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 16px;
+    width: fit-content;
+    background: linear-gradient(
+            to right,
+            rgba(11, 109, 184, 0.8),
+            rgba(4, 135, 183, 0.8),
+            rgba(42, 160, 201, 0.8)
+    );
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    text-align: left;
+}
+
+.text-box p {
+    font-weight: 300;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Разделительная полоса */
+.divider {
+    height: 1px;
+    background-color: #ccc;
+    width: 100%;
+    margin: 20px 0;
+}
+
+/* Кнопки */
+.btn-custom {
+    background-color: rgba(8, 79, 131, 0.8);
+    border: 1px solid white;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+}
+
+.btn-custom:hover {
+    background-color: rgba(8, 79, 131, 1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Блок "Начало работы" */
+.search-container {
+    padding: 0 5%;
+}
+
+.search-box {
+    background: #E3F0FF;
+    padding: 40px;
+    border-radius: 20px;
+    margin: 40px auto;
+    max-width: 800px;
+    color: #333;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.search-container {
+    background-color: #EFF9FF; /* светлый голубой фон за формой */
+    padding: 40px 5%; /* чтобы фон проступал вокруг .search-box */
+}
+
+/* Можно убрать внутренний отступ у .search-box,
+   чтобы он «врезался» в фон контейнера */
+.search-box {
+    background-color: #E3F0FF; /* ваш текущий голубой */
+    margin: 0 auto; /* сбросим внешние отступы */
+}
+
+/* Задаём полям-числам фиксированную ширину */
+.search-box-content .form-control-sm[type="number"] {
+    width: 80px; /* подберите оптимальное значение */
+    padding: 0.25rem; /* чуть меньше, чем у обычных полей */
+    text-align: center;
+}
+
+.search-box h2 {
+    text-align: center;
+    color: #011B31;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.search-box-content {
+    text-align: left;
+}
+
+.search-box p {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+    border: #011B31;
+}
+
+.form-check-label {
+    color: #333;
+    font-size: 1.1rem;
+    margin-left: 8px;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-top: 0.3em;
+    background-color: white;
+    border: 1px solid #333;
+}
+
+.form-check-input:checked {
+    background-color: #011B31;
+}
+
+.form-control {
+    background-color: white;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 1.1rem;
+    margin: 12px 0;
+    width: 100%;
+}
+
+.btn-result {
+    width: 100%;
+    padding: 12px 0;
+    margin-top: 8px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
+
+/* Модальные окна */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    color: #333;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-content p {
+    margin: 20px 0 25px;
+}
+
+.modal-content .btn-custom {
+    margin-top: 10px;
+}
+
+#loadingIndicator {
+    align-items: center;
+    gap: 10px;
+    display: flex;
+}
+
+/* Общий стиль для всех полей */
+.search-box-content .form-control {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+}
+
+/* Ключевое слово — короче */
+.search-box-content .keyword-input {
+    flex: 1 1 200px; /* гибкая ширина, но ограничена */
+}
+
+/* Поля года — шире */
+.search-box-content .year-input {
+    width: 110px;
+    text-align: center;
+}
+
+.card {
+    background-color: #e3f0ff; /* такой же, как и фон формы */
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Фон-подложка модального окна */
+.modal-overlay {
+    position: fixed; /* фиксируем поверх всего контента */
+    top: 0; /* отступ сверху */
+    left: 0; /* отступ слева */
+    width: 100vw; /* полная ширина окна */
+    height: 100vh; /* полная высота окна */
+    background: rgba(0, 0, 0, 0.5); /* полупрозрачный тёмный фон */
+    display: none; /* по-умолчанию скрыто */
+    align-items: center; /* вертикальное центрирование контента */
+    justify-content: center; /* горизонтальное центрирование */
+    z-index: 9999; /* поверх всего остального */
+}
+
+/* Собственно окно с сообщением */
+.modal-content {
+    background: #fff; /* белый фон */
+    padding: 20px; /* внутренние отступы */
+    border-radius: 8px; /* скруглённые углы */
+    max-width: 90%; /* адаптивная ширина */
+    width: 400px; /* базовая ширина */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* лёгкая тень */
+    text-align: center; /* центр текста */
+}
+
+/* Кнопка закрытия */
+.modal-content .btn-custom {
+    margin-top: 15px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    /* Заставляет карточку занимать всю высоту колонки */
+    flex: 1 1 0;
+}
+
+/* 3) Внутри card-body тоже флекс, чтобы можно было «отправлять вниз» ссылку */
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 4) Ссылка-толкатель сверху заполнителя */
+.card-link {
+    margin-top: auto;
+}
