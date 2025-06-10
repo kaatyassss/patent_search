@@ -7,11 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 BASE_URL = 'https://patents.google.com'
-STOP_WORDS = {
-    'и', 'в', 'для', 'с', 'по', 'на', 'не', 'из', 'к', 'от', 'что', 'или', 'быть', 'может', 'это', 'как',
-    'который', 'которая', 'которые', 'которых', 'включает', 'включают', 'себя', 'при', 'несколько',
-    'нескольких', 'основа', 'основе'
-}
 
 def _create_driver():
     options = Options()
